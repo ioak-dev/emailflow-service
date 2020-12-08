@@ -1,4 +1,4 @@
-package io.ioak.emailflow.aspect;
+package io.ioak.emailflow.space.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

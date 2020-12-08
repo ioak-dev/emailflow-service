@@ -1,4 +1,4 @@
-package io.ioak.emailflow.aspect;
+package io.ioak.emailflow.space.aspect;
 
 import io.ioak.emailflow.space.SpaceHolder;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +14,7 @@ public class UseAdminDbAspect {
     @Autowired
     private SpaceHolder spaceHolder;
 
-    @Around("@annotation(io.ioak.emailflow.aspect.UseAdminDb)")
+    @Around("@annotation(io.ioak.emailflow.space.aspect.UseAdminDb)")
     public Object useAdminDb(ProceedingJoinPoint joinPoint) throws Throwable {
         boolean currentValue = spaceHolder.isUseAdminDb();
         spaceHolder.setUseAdminDb(true);

@@ -1,7 +1,7 @@
 package io.ioak.emailflow.space;
 
 import com.mongodb.MongoClient;
-import io.ioak.emailflow.aspect.UseAdminDb;
+import io.ioak.emailflow.space.aspect.UseAdminDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
