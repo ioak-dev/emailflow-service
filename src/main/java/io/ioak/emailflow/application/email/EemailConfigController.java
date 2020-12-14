@@ -25,6 +25,17 @@ public class EemailConfigController {
         return ResponseEntity.ok(repository.findAll());
     }
 
+    @ApiOperation(value = "view list of Project",response = Template.class)
+    @GetMapping("/id/{id}")
+    public ResponseEntity<EmailConfig> getById(@PathVariable String id) {
+        return ResponseEntity.ok(repository.findById(id).get());
+    }
+
+    @ApiOperation(value = "view list of Project",response = Template.class)
+    @GetMapping("/project/id/{id}")
+    public ResponseEntity<List<EmailConfig>> getByProjectId(@PathVariable String id) {
+        return ResponseEntity.ok(repository.findAllByProjectId(id));
+    }
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping

@@ -1,5 +1,7 @@
 package io.ioak.emailflow.application.template;
 
+import io.ioak.emailflow.application.email.EmailConfig;
+import io.ioak.emailflow.application.project.Project;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,18 @@ public class TemplateController {
     @GetMapping
     public ResponseEntity<List<Template>> get() {
         return ResponseEntity.ok(repository.findAll());
+    }
+
+    @ApiOperation(value = "view list of Project",response = Template.class)
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Template> getById(@PathVariable String id) {
+        return ResponseEntity.ok(repository.findById(id).get());
+    }
+
+    @ApiOperation(value = "view list of Project",response = Template.class)
+    @GetMapping("/project/id/{id}")
+    public ResponseEntity<List<Template>> getByProjectId(@PathVariable String id) {
+        return ResponseEntity.ok(repository.findAllByProjectId(id));
     }
 
 
