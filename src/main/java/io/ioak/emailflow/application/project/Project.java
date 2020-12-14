@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Getter
 @NoArgsConstructor
-@Document(collection = "template")
+@Document(collection = "project")
 public class Project {
 
     private String id;

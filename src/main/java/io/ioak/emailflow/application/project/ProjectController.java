@@ -1,6 +1,7 @@
 package io.ioak.emailflow.application.project;
 
 import io.ioak.emailflow.application.template.Template;
+import io.ioak.emailflow.space.SpaceHolder;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectRepository repository;
+
+    @Autowired
+    private SpaceHolder spaceHolder;
 
 
     @ApiOperation(value = "view list of Project",response = Template.class)

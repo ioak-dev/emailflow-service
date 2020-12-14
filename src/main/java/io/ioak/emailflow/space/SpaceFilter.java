@@ -9,8 +9,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class SpaceFilter implements Filter {
@@ -28,18 +26,8 @@ public class SpaceFilter implements Filter {
             HttpServletResponse response = (HttpServletResponse) servletResponse;
 
             String path = request.getRequestURI().substring(request.getContextPath().length());
-            String spaceId2 = extractSpace(request);
-            this.spaceHolder.setSpaceId(spaceId2);
-            /*if (path.startsWith("/api/")) {
-                String spaceId = extractSpace(request);
-                this.spaceHolder.setSpaceId(spaceId);
-
-            } else if (path.startsWith("/api/common")){
-                this.spaceHolder.setSpaceId(defaultSpaceDB);
-            } else if (path.startsWith("/chat")){
-
-            }*/
-
+            String[] split = path.split("/");
+            this.spaceHolder.setSpaceId(defaultSpaceDB+"_"+split[2]);
             chain.doFilter(servletRequest, servletResponse);
         }catch (ClientAbortException ce) {
             log.warn("********ClientAbortException during spacefilter check***");
@@ -55,19 +43,4 @@ public class SpaceFilter implements Filter {
             this.spaceHolder.clear();
         }
     }
-
-    private String extractSpace(HttpServletRequest request) {
-        Matcher matcher = matcher(request);
-        if (matcher.find()) {
-            return matcher.group(2);
-        }
-        return null;
-    }
-
-    private Matcher matcher(HttpServletRequest request) {
-        Pattern pattern = Pattern.compile("/(.*?)/(.*?)/");
-        return pattern.matcher(request.getRequestURI());
-    }
-
-
 }
