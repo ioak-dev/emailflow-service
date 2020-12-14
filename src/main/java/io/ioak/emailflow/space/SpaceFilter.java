@@ -28,7 +28,9 @@ public class SpaceFilter implements Filter {
             HttpServletResponse response = (HttpServletResponse) servletResponse;
 
             String path = request.getRequestURI().substring(request.getContextPath().length());
-            if (path.startsWith("/api/space")) {
+            String spaceId2 = extractSpace(request);
+            this.spaceHolder.setSpaceId(spaceId2);
+            /*if (path.startsWith("/api/")) {
                 String spaceId = extractSpace(request);
                 this.spaceHolder.setSpaceId(spaceId);
 
@@ -36,7 +38,7 @@ public class SpaceFilter implements Filter {
                 this.spaceHolder.setSpaceId(defaultSpaceDB);
             } else if (path.startsWith("/chat")){
 
-            }
+            }*/
 
             chain.doFilter(servletRequest, servletResponse);
         }catch (ClientAbortException ce) {
@@ -57,13 +59,13 @@ public class SpaceFilter implements Filter {
     private String extractSpace(HttpServletRequest request) {
         Matcher matcher = matcher(request);
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(2);
         }
         return null;
     }
 
     private Matcher matcher(HttpServletRequest request) {
-        Pattern pattern = Pattern.compile("/api/space/(.*?)/");
+        Pattern pattern = Pattern.compile("/(.*?)/(.*?)/");
         return pattern.matcher(request.getRequestURI());
     }
 

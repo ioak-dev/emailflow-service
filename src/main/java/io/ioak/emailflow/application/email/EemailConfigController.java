@@ -1,5 +1,7 @@
-package io.ioak.emailflow.application.template;
+package io.ioak.emailflow.application.email;
 
+import io.ioak.emailflow.application.template.Template;
+import io.ioak.emailflow.application.template.TemplateRepository;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,28 +11,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/template/{spaceId}")
+@RequestMapping("/email/{spaceId}")
 @Slf4j
-public class TemplateController {
+public class EemailConfigController {
 
     @Autowired
-    private TemplateRepository repository;
+    private EmailConfigRepository repository;
 
 
-    @ApiOperation(value = "view list of Template",response = Template.class)
+    @ApiOperation(value = "view list of EmailConfig",response = Template.class)
     @GetMapping
-    public ResponseEntity<List<Template>> get() {
+    public ResponseEntity<List<EmailConfig>> get() {
         return ResponseEntity.ok(repository.findAll());
     }
 
 
-    @ApiOperation(value = "Create and update a Template",response = Template.class)
+    @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping
-    public ResponseEntity<Template> update(@RequestBody Template request) {
+    public ResponseEntity<EmailConfig> update(@RequestBody EmailConfig request) {
         return ResponseEntity.ok(repository.save(request));
     }
 
-    @ApiOperation(value = "Delete all Template",response = Template.class)
+    @ApiOperation(value = "Delete all EmailConfig",response = Template.class)
     @DeleteMapping
     public void deleteAll() {
         repository.deleteAll();

@@ -1,4 +1,4 @@
-package io.ioak.emailflow.application.template;
+package io.ioak.emailflow.application.project;
 
 import lombok.Data;
 import lombok.Getter;
@@ -11,10 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @NoArgsConstructor
 @Document(collection = "template")
-public class Template {
+public class Project {
 
     private String id;
-    private String subject;
-    private String body;
-    private String projectId;
+    private String name;
+    private String description;
 }
