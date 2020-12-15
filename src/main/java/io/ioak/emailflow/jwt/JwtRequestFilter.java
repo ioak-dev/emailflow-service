@@ -27,13 +27,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = httpServletRequest.getHeader("Authorization");
-
-        String token = null;
         String userId = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-            userId = jwtUtil.extractUserId(token);
+        if (authorizationHeader != null) {
+            userId = jwtUtil.extractUserId(authorizationHeader);
         }
 
         if (userId != null) {
