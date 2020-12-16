@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Template {
 
     private String id;
+    private String name;
+    private String reference;
     private String subject;
     private String body;
     private String projectId;

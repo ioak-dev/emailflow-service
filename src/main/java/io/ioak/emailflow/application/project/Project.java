@@ -15,5 +15,6 @@ public class Project {
 
     private String id;
     private String name;
+    private String reference;
     private String description;
 }
