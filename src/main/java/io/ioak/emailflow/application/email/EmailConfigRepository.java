@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface EmailConfigRepository extends MongoRepository<EmailConfig, String> {
         List<EmailConfig> findAllByProjectId(String projectId);
+
+        EmailConfig findByReference(String reference);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/email/{spaceId}")
 @Slf4j
-public class EemailConfigController {
+public class EmailConfigController {
 
     @Autowired
     private EmailConfigRepository repository;
