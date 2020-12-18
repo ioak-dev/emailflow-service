@@ -20,7 +20,7 @@ import java.util.Properties;
 @Slf4j
 public class MailProcessor {
 
-    @Value("${spring.mail.username}")
+   /* @Value("${spring.mail.username}")
     String  from;
 
     @Value("${spring.mail.host}")
@@ -30,27 +30,27 @@ public class MailProcessor {
     String port;
 
     @Value("${spring.mail.password}")
-    String password;
+    String password;*/
 
     public boolean send( String to, String body, String subject) {
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", this.host);
-        props.put("mail.smtp.port", this.port);
+        props.put("mail.smtp.host", "this.host");
+        props.put("mail.smtp.port", "this.port");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable",true);
 
         Session session = Session.getDefaultInstance(props,
                                                      new Authenticator() {
                                                          protected PasswordAuthentication getPasswordAuthentication() {
-                                                             return new PasswordAuthentication(MailProcessor.this.from, MailProcessor.this.password);
+                                                             return new PasswordAuthentication("MailProcessor.this.from", "MailProcessor.this.password");
                                                          }
                                                      });
 
         try{
             MimeMessage message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress(this.from));
+            message.setFrom(new InternetAddress("this.from"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(subject);
             message.setText(body);
@@ -59,13 +59,13 @@ public class MailProcessor {
             log.info("Mail send successfully to :"+to);
             return true;
         }catch(MessagingException e){
-            log.info("Sending From: " + this.from + " Sending To: " + to);
+            log.info("Sending From: " + "this.from" + " Sending To: " + to);
             log.error("Error occured during sending mail"+e);
             return false;
         }
     }
 
-    public boolean sendWithTemplate( String to, String bodyTemplate, Map<String, String> bodyValues,
+    /*public boolean sendWithTemplate( String to, String bodyTemplate, Map<String, String> bodyValues,
                                      String subjectTemplate, Map<String, String> subjectValues) {
 
         Properties props = new Properties();
@@ -97,7 +97,7 @@ public class MailProcessor {
             log.error("Error occured during sending mail"+e);
             return false;
         }
-    }
+    }*/
 
     public static VelocityEngine getVelocityEngine(){
 
