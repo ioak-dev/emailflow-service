@@ -1,5 +1,7 @@
 package io.ioak.emailflow.config;
 
+import io.ioak.emailflow.application.email.EmailServer;
+import io.ioak.emailflow.application.emailprocessing.EmailServerResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -32,34 +34,34 @@ public class MailProcessor {
     @Value("${spring.mail.password}")
     String password;*/
 
-    public boolean send( String to, String body, String subject) {
+    public boolean send(EmailServerResource resource, EmailServer server) {
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", "this.host");
-        props.put("mail.smtp.port", "this.port");
-        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.host", server.getHost());
+        props.put("mail.smtp.port", server.getPort());
+        props.put("mail.smtp.auth", true);
         props.put("mail.smtp.starttls.enable",true);
 
         Session session = Session.getDefaultInstance(props,
                                                      new Authenticator() {
                                                          protected PasswordAuthentication getPasswordAuthentication() {
-                                                             return new PasswordAuthentication("MailProcessor.this.from", "MailProcessor.this.password");
+                                                             return new PasswordAuthentication(server.getSender(), server.getPassword());
                                                          }
                                                      });
 
         try{
             MimeMessage message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress("this.from"));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(subject);
-            message.setText(body);
+            message.setFrom(new InternetAddress(server.getSender()));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(resource.getTo()));
+            message.setSubject(resource.getSubject());
+            message.setText(resource.getBody());
 
             Transport.send(message);
-            log.info("Mail send successfully to :"+to);
+            log.info("Mail send successfully to :"+resource.getTo());
             return true;
         }catch(MessagingException e){
-            log.info("Sending From: " + "this.from" + " Sending To: " + to);
+            log.info("Sending From: " + "this.from" + " Sending To: " + resource.getTo());
             log.error("Error occured during sending mail"+e);
             return false;
         }
