@@ -1,7 +1,5 @@
 package io.ioak.emailflow.application.template;
 
-import io.ioak.emailflow.application.email.EmailConfig;
-import io.ioak.emailflow.application.project.Project;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

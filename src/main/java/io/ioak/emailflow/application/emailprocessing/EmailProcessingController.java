@@ -1,8 +1,8 @@
 package io.ioak.emailflow.application.emailprocessing;
 
 
-import io.ioak.emailflow.application.email.EmailConfig;
-import io.ioak.emailflow.application.email.EmailConfigRepository;
+import io.ioak.emailflow.application.email.EmailServer;
+import io.ioak.emailflow.application.email.EmailServerRepository;
 import io.ioak.emailflow.application.template.Template;
 import io.ioak.emailflow.config.MailProcessor;
 import io.swagger.annotations.ApiOperation;
@@ -20,13 +20,13 @@ public class EmailProcessingController {
     private MailProcessor mailProcessor;
 
     @Autowired
-    private EmailConfigRepository emailConfigRepository;
+    private EmailServerRepository emailServerRepository;
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{emailConfigReference}")
     public ResponseEntity<?> sendMail(@PathVariable String projectReference,
                                       @PathVariable String emailConfigReference) {
-        EmailConfig emailConfig = emailConfigRepository.findByReference(emailConfigReference);
+        EmailServer emailServer = emailServerRepository.findByReference(emailConfigReference);
         return ResponseEntity.ok("");
     }
 

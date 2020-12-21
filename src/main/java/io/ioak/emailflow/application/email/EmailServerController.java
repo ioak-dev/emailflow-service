@@ -1,7 +1,6 @@
 package io.ioak.emailflow.application.email;
 
 import io.ioak.emailflow.application.template.Template;
-import io.ioak.emailflow.application.template.TemplateRepository;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,35 +10,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/email/{spaceId}")
+@RequestMapping("/email-server/{spaceId}")
 @Slf4j
-public class EmailConfigController {
+public class EmailServerController {
 
     @Autowired
-    private EmailConfigRepository repository;
+    private EmailServerRepository repository;
 
 
     @ApiOperation(value = "view list of EmailConfig",response = Template.class)
     @GetMapping
-    public ResponseEntity<List<EmailConfig>> get() {
+    public ResponseEntity<List<EmailServer>> get() {
         return ResponseEntity.ok(repository.findAll());
     }
 
     @ApiOperation(value = "view list of Project",response = Template.class)
     @GetMapping("/id/{id}")
-    public ResponseEntity<EmailConfig> getById(@PathVariable String id) {
+    public ResponseEntity<EmailServer> getById(@PathVariable String id) {
         return ResponseEntity.ok(repository.findById(id).get());
     }
 
     @ApiOperation(value = "view list of Project",response = Template.class)
     @GetMapping("/project/id/{id}")
-    public ResponseEntity<List<EmailConfig>> getByProjectId(@PathVariable String id) {
+    public ResponseEntity<List<EmailServer>> getByProjectId(@PathVariable String id) {
         return ResponseEntity.ok(repository.findAllByProjectId(id));
     }
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping
-    public ResponseEntity<EmailConfig> update(@RequestBody EmailConfig request) {
+    public ResponseEntity<EmailServer> update(@RequestBody EmailServer request) {
         return ResponseEntity.ok(repository.save(request));
     }
 

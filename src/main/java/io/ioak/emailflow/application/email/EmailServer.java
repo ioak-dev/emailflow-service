@@ -10,13 +10,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Getter
 @NoArgsConstructor
-@Document(collection = "emailconfig")
-public class EmailConfig {
+@Document(collection = "server")
+public class EmailServer {
 
     private String id;
     private String name;
     private String reference;
-    private String fromEmail;
+    private String sender;
     private String host;
     private String port;
     private String password;
