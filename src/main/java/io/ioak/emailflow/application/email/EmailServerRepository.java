@@ -8,4 +8,6 @@ public interface EmailServerRepository extends MongoRepository<EmailServer, Stri
         List<EmailServer> findAllByProjectId(String projectId);
 
         EmailServer findByReference(String reference);
+
+        EmailServer findByName(String name);
 }

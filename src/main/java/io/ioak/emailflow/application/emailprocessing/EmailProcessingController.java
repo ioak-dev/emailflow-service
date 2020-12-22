@@ -5,6 +5,7 @@ import io.ioak.emailflow.application.email.EmailServer;
 import io.ioak.emailflow.application.email.EmailServerRepository;
 import io.ioak.emailflow.application.template.Template;
 import io.ioak.emailflow.config.MailProcessor;
+import io.ioak.emailflow.space.SpaceHolder;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,9 @@ public class EmailProcessingController {
 
     @Autowired
     private MailProcessor mailProcessor;
+
+    @Autowired
+    private SpaceHolder spaceHolder;
 
     @Autowired
     private EmailServerRepository emailServerRepository;
