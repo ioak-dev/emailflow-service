@@ -5,9 +5,12 @@ import io.ioak.emailflow.application.emailprocessing.EmailServerResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
+import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,7 +57,9 @@ public class MailProcessor {
             MimeMessage message = new MimeMessage(session);
 
             message.setFrom(new InternetAddress(server.getSender()));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(resource.getTo()));
+            message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(resource.getTo().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(resource.getCc().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(resource.getBcc().stream().collect(Collectors.joining(","))));
             message.setSubject(resource.getSubject());
             message.setText(resource.getBody());
 
@@ -67,39 +73,40 @@ public class MailProcessor {
         }
     }
 
-    /*public boolean sendWithTemplate( String to, String bodyTemplate, Map<String, String> bodyValues,
-                                     String subjectTemplate, Map<String, String> subjectValues) {
+    public boolean sendWithTemplate( EmailServerResource resource, EmailServer server) {
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", this.host);
-        props.put("mail.smtp.port", this.port);
-        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.host", server.getHost());
+        props.put("mail.smtp.port", server.getPort());
+        props.put("mail.smtp.auth", true);
         props.put("mail.smtp.starttls.enable",true);
 
         Session session = Session.getDefaultInstance(props,
                 new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(MailProcessor.this.from, MailProcessor.this.password);
+                        return new PasswordAuthentication(server.getSender(), server.getPassword());
                     }
                 });
 
         try{
             MimeMessage message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress(this.from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(getHtmlByTemplateAndContext(subjectTemplate, subjectValues), "UTF-8");
-            message.setText(getHtmlByTemplateAndContext(bodyTemplate, bodyValues), "UTF-8");
+            message.setFrom(new InternetAddress(server.getSender()));
+            message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(resource.getTo().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(resource.getCc().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(resource.getBcc().stream().collect(Collectors.joining(","))));
+            message.setSubject(velocityWithStringTemplateExample(), "UTF-8");
+            message.setText(velocityWithStringTemplateExample(), "UTF-8");
 
             Transport.send(message);
-            log.info("Mail send successfully to :"+to);
+            log.info("Mail send successfully to :");
             return true;
         }catch(MessagingException e){
-            log.info("Sending From: " + this.from + " Sending To: " + to);
+            //log.info("Sending From: " + this.from + " Sending To: " + to);
             log.error("Error occured during sending mail"+e);
             return false;
         }
-    }*/
+    }
 
     public static VelocityEngine getVelocityEngine(){
 
@@ -126,5 +133,34 @@ public class MailProcessor {
         StringWriter writer = new StringWriter();
         template.merge( context, writer );
         return  writer.toString();
+    }
+
+    private static String velocityWithStringTemplateExample() {
+        // Initialize the engine.
+        VelocityEngine engine = new VelocityEngine();
+        engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
+        //engine.setProperty("runtime.log.logsystem.log4j.logger", LOGGER.getName());
+        engine.setProperty(Velocity.RESOURCE_LOADER, "string");
+        engine.addProperty("string.resource.loader.class", StringResourceLoader.class.getName());
+        engine.addProperty("string.resource.loader.repository.static", "false");
+        //  engine.addProperty("string.resource.loader.modificationCheckInterval", "1");
+        engine.init();
+
+        // Initialize my template repository. You can replace the "Hello $w" with your String.
+        StringResourceRepository repo = (StringResourceRepository) engine.getApplicationAttribute(StringResourceLoader.REPOSITORY_NAME_DEFAULT);
+        repo.putStringResource("woogie2", "Hello $w");
+
+        // Set parameters for my template.
+        VelocityContext context = new VelocityContext();
+        context.put("w", "world!");
+
+        // Get and merge the template with my parameters.
+        Template template = engine.getTemplate("woogie2");
+        StringWriter writer = new StringWriter();
+        //template.merge(context, writer);
+        return  writer.toString();
+
+        // Show the result.
+        //System.out.println(writer.toString());
     }
 }

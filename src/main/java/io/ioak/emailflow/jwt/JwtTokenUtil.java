@@ -27,7 +27,7 @@ public class JwtTokenUtil {
             e.printStackTrace();
         }
 
-        return claims.get("userId").toString();
+        return claims.get("email").toString();
     }
 
     public User extractUser(String token) {
@@ -85,7 +85,7 @@ public class JwtTokenUtil {
         return createToken(claims);
     }
 
-    public String generateTokenWithUser(User user) {
+    public String generateTokenWithUser(JwtResorce.UserResource user) {
 
         Map<String, Object> claims = new HashMap<>();
 

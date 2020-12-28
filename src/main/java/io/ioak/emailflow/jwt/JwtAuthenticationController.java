@@ -39,9 +39,9 @@ public class JwtAuthenticationController {
         String customURL = "http://127.0.0.1:8020/auth/" + "space/" + spaceId + "/session/" + token;
 
         try {
-            ResponseEntity<UserResource> responseEntity = restTemplate.getForEntity(customURL, UserResource.class);
+            ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
 
-            UserResource userResource = responseEntity.getBody();
+            JwtResorce.UserResource userResource = responseEntity.getBody();
             spaceHolder.setSpaceId("emailflow_"+spaceId);
             if (userResource != null) {
                 String userId = tokenUtil.extractUserWithSecurityKey(userResource.getToken(), "jwtsecret");
@@ -49,7 +49,8 @@ public class JwtAuthenticationController {
                 if (user != null) {
                     userRepository.save(user);
                 }
-                UserResource userResource1 = getUserResource(user, userResource.getToken());
+                //String responseToken = jwtTokenUtil.generateTokenWithUser(userResource);
+                JwtResorce.UserResource userResource1 = getUserResource(user, jwtTokenUtil.generateTokenWithUser(userResource));
                 return ResponseEntity.ok(getUserData(userResource1));
             }
 
@@ -59,8 +60,8 @@ public class JwtAuthenticationController {
         return null;
     }
 
-    private UserResource getUserResource(User user, String token) {
-        UserResource userResource = new UserResource();
+    private JwtResorce.UserResource getUserResource(User user, String token) {
+        JwtResorce.UserResource userResource = new JwtResorce.UserResource();
         userResource.set_id(user.getId());
         userResource.setFirstName(user.getFirstName());
         userResource.setLastName(user.getLastName());
@@ -70,28 +71,14 @@ public class JwtAuthenticationController {
         return userResource;
     }
 
-    private UserData getUserData(UserResource user) {
-        UserData userData = new UserData();
+    private JwtResorce.UserData getUserData(JwtResorce.UserResource user) {
+        JwtResorce.UserData userData = new JwtResorce.UserData();
         userData.setData(user);
 
         return userData;
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserData {
-        private UserResource data;
-    }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserResource {
-        private String _id;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String token;
-    }
+
+
 }
