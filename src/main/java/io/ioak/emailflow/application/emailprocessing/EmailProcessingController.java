@@ -4,12 +4,10 @@ package io.ioak.emailflow.application.emailprocessing;
 import io.ioak.emailflow.application.email.EmailServer;
 import io.ioak.emailflow.application.email.EmailServerRepository;
 import io.ioak.emailflow.application.template.Template;
+import io.ioak.emailflow.application.template.TemplateRepository;
 import io.ioak.emailflow.config.MailProcessor;
 import io.ioak.emailflow.space.SpaceHolder;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +27,9 @@ public class EmailProcessingController {
     @Autowired
     private EmailServerRepository emailServerRepository;
 
+    @Autowired
+    private TemplateRepository templateRepository;
+
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{emailConfigReference}")
     public void sendMail(@PathVariable String projectReference,
@@ -40,10 +41,14 @@ public class EmailProcessingController {
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{emailConfigReference}/{templatereference}")
-    public ResponseEntity<?> sendMailWithTemplate(@PathVariable String projectReference,
+    public void sendMailWithTemplate(@PathVariable String projectReference,
                                                   @PathVariable String emailConfigReference,
-                                                  @PathVariable String templatereference) {
+                                                  @PathVariable String templatereference,
+                                                  @RequestBody EmailServerTemplateResource resource) {
+        EmailServer emailServer = emailServerRepository.findByReference(emailConfigReference);
+        Template template = templateRepository.findByReference(templatereference);
+        mailProcessor.sendWithTemplate(resource, emailServer,
+                template.getSubject(), template.getBody());
 
-        return ResponseEntity.ok("");
     }
 }

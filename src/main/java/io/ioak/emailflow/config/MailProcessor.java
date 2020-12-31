@@ -2,12 +2,17 @@ package io.ioak.emailflow.config;
 
 import io.ioak.emailflow.application.email.EmailServer;
 import io.ioak.emailflow.application.emailprocessing.EmailServerResource;
+import io.ioak.emailflow.application.emailprocessing.EmailServerTemplateResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.RuntimeSingleton;
+import org.apache.velocity.runtime.parser.ParseException;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
@@ -73,7 +79,8 @@ public class MailProcessor {
         }
     }
 
-    public boolean sendWithTemplate( EmailServerResource resource, EmailServer server) {
+    public boolean sendWithTemplate(EmailServerTemplateResource resource, EmailServer server,
+                                    String subjectTemplate, String bodyTemplate) {
 
         Properties props = new Properties();
         props.put("mail.smtp.host", server.getHost());
@@ -95,8 +102,8 @@ public class MailProcessor {
             message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(resource.getTo().stream().collect(Collectors.joining(","))));
             message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(resource.getCc().stream().collect(Collectors.joining(","))));
             message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(resource.getBcc().stream().collect(Collectors.joining(","))));
-            message.setSubject(velocityWithStringTemplateExample(), "UTF-8");
-            message.setText(velocityWithStringTemplateExample(), "UTF-8");
+            message.setSubject(velocityWithStringTemplate(subjectTemplate, resource.getParameters()), "UTF-8");
+            message.setText(velocityWithStringTemplate(bodyTemplate, resource.getParameters()), "UTF-8");
 
             Transport.send(message);
             log.info("Mail send successfully to :");
@@ -135,7 +142,9 @@ public class MailProcessor {
         return  writer.toString();
     }
 
-    private static String velocityWithStringTemplateExample() {
+
+
+    private static String velocityWithStringTemplate(String inputTemplate, Map<String, String> templateValues) {
         // Initialize the engine.
         VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
@@ -147,20 +156,21 @@ public class MailProcessor {
         engine.init();
 
         // Initialize my template repository. You can replace the "Hello $w" with your String.
+
         StringResourceRepository repo = (StringResourceRepository) engine.getApplicationAttribute(StringResourceLoader.REPOSITORY_NAME_DEFAULT);
-        repo.putStringResource("woogie2", "Hello $w");
+        repo.putStringResource("template", inputTemplate);
+
 
         // Set parameters for my template.
         VelocityContext context = new VelocityContext();
-        context.put("w", "world!");
+        templateValues.forEach((k, v) -> {
+            context.put(k, v);
+        });
 
         // Get and merge the template with my parameters.
-        Template template = engine.getTemplate("woogie2");
+        Template template = engine.getTemplate("template");
         StringWriter writer = new StringWriter();
-        //template.merge(context, writer);
+        template.merge(context, writer);
         return  writer.toString();
-
-        // Show the result.
-        //System.out.println(writer.toString());
     }
 }
