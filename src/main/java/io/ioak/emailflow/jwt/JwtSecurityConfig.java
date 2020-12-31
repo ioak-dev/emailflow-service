@@ -45,13 +45,10 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeRequests()
-                //.antMatchers("/api/space/**/template/**/**").permitAll()
                 .antMatchers("/api/space/**/user/**/**").permitAll()
-                //.antMatchers("/project/**/**").permitAll()
-                //.antMatchers("/template/**/**").permitAll()
-                //.antMatchers("/email-server/**/**").permitAll()
                 .antMatchers("/auth/**/**/**/**").permitAll()
-                //.antMatchers("/mail/**/**/**/**").permitAll()
+                .antMatchers("/auth/**/**/**/**/**").permitAll()
+                .antMatchers("/email/**/**/**/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

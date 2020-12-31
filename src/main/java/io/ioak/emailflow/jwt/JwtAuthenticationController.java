@@ -60,6 +60,37 @@ public class JwtAuthenticationController {
         return null;
     }
 
+    @ApiOperation(value = "Create jwt Token", response = String.class)
+    @GetMapping(value = "/session/appspace/{token}")
+    protected ResponseEntity<?> validateTokenAppspace(@PathVariable String token, @PathVariable String spaceId) throws Exception {
+
+        String customURL = "http://127.0.0.1:8020/auth/" + "appspace/" + spaceId + "/session/" + token;
+
+        try {
+            ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
+
+            JwtResorce.UserResource userResource = responseEntity.getBody();
+            spaceHolder.setSpaceId("emailflow_"+spaceId);
+            if (userResource != null) {
+                String userId = tokenUtil.extractUserWithSecurityKey(userResource.getToken(), "jwtsecret");
+                User user = userRepository.findById(userId).orElse(null);
+                if (user == null) {
+                    user = new User();
+                }
+                user.setEmail(userResource.getEmail());
+                user.setFirstName(userResource.getFirstName());
+                user.setLastName(userResource.getLastName());
+                userRepository.save(user);
+                JwtResorce.UserResource userResource1 = getUserResource(user, userResource.getToken());
+                return ResponseEntity.ok(getUserData(userResource1));
+            }
+
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
     private JwtResorce.UserResource getUserResource(User user, String token) {
         JwtResorce.UserResource userResource = new JwtResorce.UserResource();
         userResource.set_id(user.getId());
