@@ -40,7 +40,7 @@ public class ApikeyController {
     }
 
     @ApiOperation(value = "Delete Template by Id",response = Template.class)
-    @DeleteMapping(value = "/id")
+    @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable String id) {
         repository.deleteById(id);
     }
