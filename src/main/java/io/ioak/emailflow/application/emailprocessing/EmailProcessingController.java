@@ -15,8 +15,14 @@ import io.ioak.emailflow.space.SpaceHolder;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
+
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/email/{spaceId}")
@@ -34,7 +40,7 @@ public class EmailProcessingController {
 
     @Autowired
     private ProjectRepository projectRepository;
-    
+
     @Autowired
     private ApikeyRepository apikeyRepository;
 
@@ -43,20 +49,37 @@ public class EmailProcessingController {
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{serverReference}")
-    public void sendMail(@PathVariable String projectReference,
+    public ResponseEntity<?> sendMail(@PathVariable String projectReference,
                                       @PathVariable String serverReference,
                                       @RequestBody EmailServerResource resource) {
         String inputKey = "123";
         Project project = projectRepository.findByReference(projectReference);
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
-            mailProcessor.send(resource, emailServer);
+            try{
+                if(resource.isSynch()) {
+                    mailProcessor.sendWithSynch(resource, emailServer);
+                } else {
+                    mailProcessor.send(resource, emailServer);
+                }
+                return ResponseEntity.ok("Successfull");
+            }catch(SendFailedException s) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("message could not be sent to recipients");
+            }catch(MessagingException m) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Error Message");
+            }
+
         }
+        return new ResponseEntity<>("", UNAUTHORIZED);
     }
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{serverReference}/{templatereference}")
-    public void sendMailWithTemplate(@PathVariable String projectReference,
+    public ResponseEntity<?> sendMailWithTemplate(@PathVariable String projectReference,
                                                   @PathVariable String serverReference,
                                                   @PathVariable String templatereference,
                                                   @RequestBody EmailServerTemplateResource resource) {
@@ -65,12 +88,29 @@ public class EmailProcessingController {
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
             Template template = templateRepository.findByReference(templatereference);
-            mailProcessor.sendWithTemplate(resource, emailServer,
-                    template.getSubject(), template.getBody());
-        }
+            try{
+                if(resource.isSynch()) {
+                    mailProcessor.sendWithTemplateWithSynch(resource, emailServer,
+                            template.getSubject(), template.getBody());
+                }else {
+                    mailProcessor.sendWithTemplate(resource, emailServer,
+                            template.getSubject(), template.getBody());
+                }
+                return ResponseEntity.ok("Successfull");
+            }catch(SendFailedException s) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("message could not be sent to recipients");
+            }catch(MessagingException m) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Error Message");
+            }
 
+        }
+        return new ResponseEntity<>("", UNAUTHORIZED);
     }
-    
+
     private boolean isAuthorized(String key, String projectId, String serverId) {
 
         Apikey apikey = apikeyRepository.findByKey(key);
@@ -79,7 +119,7 @@ public class EmailProcessingController {
                 || (apikey.getScope().equals(ApikeyScope.PROJECT) && !apikey.getDomainId().equals(projectId))
                 || (apikey.getScope().equals(ApikeyScope.SERVER) && !apikey.getDomainId().equals(serverId))
         ) {
-            return true;
+            return false;
         }
 
         return true;

@@ -32,19 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MailProcessor {
 
-   /* @Value("${spring.mail.username}")
-    String  from;
-
-    @Value("${spring.mail.host}")
-    String host;
-
-    @Value("${spring.mail.port}")
-    String port;
-
-    @Value("${spring.mail.password}")
-    String password;*/
-
-    public boolean send(EmailServerResource resource, EmailServer server) {
+    public boolean send(EmailServerResource resource, EmailServer server) throws MessagingException{
 
         Properties props = new Properties();
         props.put("mail.smtp.host", server.getHost());
@@ -72,15 +60,54 @@ public class MailProcessor {
             Transport.send(message);
             log.info("Mail send successfully to :"+resource.getTo());
             return true;
-        }catch(MessagingException e){
-            log.info("Sending From: " + "this.from" + " Sending To: " + resource.getTo());
+        }catch(SendFailedException e){
+            log.error("message could not be sent to recipients"+e);
+            throw e;
+        }catch(MessagingException e) {
             log.error("Error occured during sending mail"+e);
-            return false;
+            throw e;
+        }
+    }
+
+    public boolean sendWithSynch(EmailServerResource resource, EmailServer server) throws MessagingException{
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", server.getHost());
+        props.put("mail.smtp.port", server.getPort());
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable",true);
+
+        Session session = Session.getDefaultInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(server.getSender(), server.getPassword());
+                    }
+                });
+
+        try{
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(server.getSender()));
+            message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(resource.getTo().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(resource.getCc().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(resource.getBcc().stream().collect(Collectors.joining(","))));
+            message.setSubject(resource.getSubject());
+            message.setText(resource.getBody());
+
+            Transport.send(message);
+            log.info("Mail send successfully to :"+resource.getTo());
+            return true;
+        }catch(SendFailedException e){
+            log.error("message could not be sent to recipients"+e);
+            throw e;
+        }catch(MessagingException e) {
+            log.error("Error occured during sending mail"+e);
+            throw e;
         }
     }
 
     public boolean sendWithTemplate(EmailServerTemplateResource resource, EmailServer server,
-                                    String subjectTemplate, String bodyTemplate) {
+                                    String subjectTemplate, String bodyTemplate) throws MessagingException {
 
         Properties props = new Properties();
         props.put("mail.smtp.host", server.getHost());
@@ -108,10 +135,50 @@ public class MailProcessor {
             Transport.send(message);
             log.info("Mail send successfully to :");
             return true;
-        }catch(MessagingException e){
-            //log.info("Sending From: " + this.from + " Sending To: " + to);
+        }catch(SendFailedException e){
             log.error("Error occured during sending mail"+e);
-            return false;
+            throw e;
+        }catch(MessagingException e) {
+            log.error("Error occured during sending mail"+e);
+            throw e;
+        }
+    }
+
+    public boolean sendWithTemplateWithSynch(EmailServerTemplateResource resource, EmailServer server,
+                                    String subjectTemplate, String bodyTemplate) throws MessagingException {
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", server.getHost());
+        props.put("mail.smtp.port", server.getPort());
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable",true);
+
+        Session session = Session.getDefaultInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(server.getSender(), server.getPassword());
+                    }
+                });
+
+        try{
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(server.getSender()));
+            message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(resource.getTo().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(resource.getCc().stream().collect(Collectors.joining(","))));
+            message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(resource.getBcc().stream().collect(Collectors.joining(","))));
+            message.setSubject(velocityWithStringTemplate(subjectTemplate, resource.getParameters()), "UTF-8");
+            message.setText(velocityWithStringTemplate(bodyTemplate, resource.getParameters()), "UTF-8");
+
+            Transport.send(message);
+            log.info("Mail send successfully to :");
+            return true;
+        }catch(SendFailedException e){
+            log.error("Error occured during sending mail"+e);
+            throw e;
+        }catch(MessagingException e) {
+            log.error("Error occured during sending mail"+e);
+            throw e;
         }
     }
 

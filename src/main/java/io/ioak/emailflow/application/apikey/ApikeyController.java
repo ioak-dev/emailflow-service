@@ -34,8 +34,7 @@ public class ApikeyController {
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping
     public ResponseEntity<Apikey> create(@RequestBody Apikey request) {
-        // TBD AMAR
-//        request.setKey(new UUID().toString());
+        request.setKey(UUID.randomUUID().toString());
         return ResponseEntity.ok(repository.save(request));
     }
 

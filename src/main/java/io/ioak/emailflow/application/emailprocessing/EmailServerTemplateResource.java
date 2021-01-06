@@ -15,4 +15,5 @@ public class EmailServerTemplateResource {
     private List<String> cc;
     private List<String> bcc;
     private Map<String, String> parameters;
+    private boolean synch;
 }
