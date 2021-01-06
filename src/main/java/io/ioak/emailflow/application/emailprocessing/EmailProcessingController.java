@@ -49,10 +49,10 @@ public class EmailProcessingController {
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{serverReference}")
-    public ResponseEntity<?> sendMail(@PathVariable String projectReference,
+    public ResponseEntity<?> sendMail(@RequestHeader("Authorization") String inputKey,
+                                      @PathVariable String projectReference,
                                       @PathVariable String serverReference,
                                       @RequestBody EmailServerResource resource) {
-        String inputKey = "123";
         Project project = projectRepository.findByReference(projectReference);
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
@@ -79,11 +79,11 @@ public class EmailProcessingController {
 
     @ApiOperation(value = "Create and update a EmailConfig",response = Template.class)
     @PostMapping("/{projectReference}/{serverReference}/{templatereference}")
-    public ResponseEntity<?> sendMailWithTemplate(@PathVariable String projectReference,
+    public ResponseEntity<?> sendMailWithTemplate(@RequestHeader("Authorization") String inputKey,
+                                                  @PathVariable String projectReference,
                                                   @PathVariable String serverReference,
                                                   @PathVariable String templatereference,
                                                   @RequestBody EmailServerTemplateResource resource) {
-        String inputKey = "123";
         Project project = projectRepository.findByReference(projectReference);
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
