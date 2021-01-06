@@ -49,6 +49,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**/**/**/**").permitAll()
                 .antMatchers("/auth/**/**/**/**/**").permitAll()
                 .antMatchers("/email/**/**/**/**").permitAll()
+                .antMatchers("/email/**/**/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

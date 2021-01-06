@@ -57,12 +57,13 @@ public class EmailProcessingController {
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
             try{
-                if(resource.isAsync()) {
-                    mailProcessor.sendWithSynch(resource, emailServer);
+                if (resource.isAsync()) {
+                    mailProcessor.sendEmailAsync(resource, emailServer);
+                    return ResponseEntity.ok("Email will be sent");
                 } else {
-                    mailProcessor.send(resource, emailServer);
+                    mailProcessor.sendEmailSync(resource, emailServer);
+                    return ResponseEntity.ok("Email sent successfully");
                 }
-                return ResponseEntity.ok("Successfull");
             }catch(SendFailedException s) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
@@ -89,14 +90,15 @@ public class EmailProcessingController {
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
             Template template = templateRepository.findByReference(templatereference);
             try{
-                if(resource.isAsync()) {
-                    mailProcessor.sendWithTemplateWithSynch(resource, emailServer,
+                if (resource.isAsync()) {
+                    mailProcessor.sendEmailUsingTemplateAsync(resource, emailServer,
                             template.getSubject(), template.getBody());
-                }else {
-                    mailProcessor.sendWithTemplate(resource, emailServer,
+                    return ResponseEntity.ok("Email will be sent");
+                } else {
+                    mailProcessor.sendEmailUsingTemplateSync(resource, emailServer,
                             template.getSubject(), template.getBody());
+                    return ResponseEntity.ok("Email sent successfully");
                 }
-                return ResponseEntity.ok("Successfull");
             }catch(SendFailedException s) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)

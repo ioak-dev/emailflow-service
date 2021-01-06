@@ -29,8 +29,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String authorizationHeader = httpServletRequest.getHeader("Authorization");
         String userId = null;
 
-        if (authorizationHeader != null) {
+        if (authorizationHeader != null && !authorizationHeader.startsWith("key.")) {
             userId = jwtUtil.extractUserId(authorizationHeader);
+        }
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("key.")) {
+            userId = "API_CLIENT";
         }
 
         if (userId != null) {
