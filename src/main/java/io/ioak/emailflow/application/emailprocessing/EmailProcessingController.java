@@ -57,7 +57,7 @@ public class EmailProcessingController {
         EmailServer emailServer = emailServerRepository.findByReference(serverReference);
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
             try{
-                if(resource.isSynch()) {
+                if(resource.isAsync()) {
                     mailProcessor.sendWithSynch(resource, emailServer);
                 } else {
                     mailProcessor.send(resource, emailServer);
@@ -89,7 +89,7 @@ public class EmailProcessingController {
         if (isAuthorized(inputKey, project.getId(), emailServer.getId())) {
             Template template = templateRepository.findByReference(templatereference);
             try{
-                if(resource.isSynch()) {
+                if(resource.isAsync()) {
                     mailProcessor.sendWithTemplateWithSynch(resource, emailServer,
                             template.getSubject(), template.getBody());
                 }else {

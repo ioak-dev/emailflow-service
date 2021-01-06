@@ -15,5 +15,5 @@ public class EmailServerResource {
     private List<String> bcc;
     private String subject;
     private String body;
-    private boolean synch;
+    private boolean async;
 }
