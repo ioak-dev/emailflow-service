@@ -43,7 +43,7 @@ public class JwtAuthenticationController {
     protected ResponseEntity<?> validateToken(@PathVariable String token, @PathVariable String spaceId) throws Exception {
 
         String oneAuth = Strings.isNullOrEmpty(System.getenv("ONEAUTH_API_URL")) ? oneAuthUrl : System.getenv("ONEAUTH_API_URL");
-        String customURL = oneAuth + "space/" + spaceId + "/session/" + token;
+        String customURL = oneAuth+"/auth/" + "space/" + spaceId + "/session/" + token;
 
         try {
             ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
@@ -72,7 +72,7 @@ public class JwtAuthenticationController {
     protected ResponseEntity<?> validateTokenAppspace(@PathVariable String token, @PathVariable String spaceId) throws Exception {
 
         String oneAuth = Strings.isNullOrEmpty(System.getenv("ONEAUTH_API_URL")) ? oneAuthUrl : System.getenv("ONEAUTH_API_URL");
-        String customURL = oneAuth + "appspace/" + spaceId + "/session/" + token;
+        String customURL = oneAuth+"/auth/" + "appspace/" + spaceId + "/session/" + token;
 
         try {
             ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
