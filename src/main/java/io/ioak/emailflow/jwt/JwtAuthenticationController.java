@@ -1,5 +1,6 @@
 package io.ioak.emailflow.jwt;
 
+import com.google.common.base.Strings;
 import io.ioak.emailflow.space.SpaceHolder;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -32,11 +34,16 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtTokenUtil tokenUtil;
 
+    @Value("${oneauth.api.url}")
+    private String oneAuthUrl;
+
+
     @ApiOperation(value = "Create jwt Token", response = String.class)
     @GetMapping(value = "/session/{token}")
     protected ResponseEntity<?> validateToken(@PathVariable String token, @PathVariable String spaceId) throws Exception {
 
-        String customURL = "http://127.0.0.1:8020/auth/" + "space/" + spaceId + "/session/" + token;
+        String oneAuth = Strings.isNullOrEmpty(System.getenv("ONEAUTH_API_URL")) ? oneAuthUrl : System.getenv("ONEAUTH_API_URL");
+        String customURL = oneAuth+"/auth/" + "space/" + spaceId + "/session/" + token;
 
         try {
             ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
@@ -64,7 +71,8 @@ public class JwtAuthenticationController {
     @GetMapping(value = "/session/appspace/{token}")
     protected ResponseEntity<?> validateTokenAppspace(@PathVariable String token, @PathVariable String spaceId) throws Exception {
 
-        String customURL = "http://127.0.0.1:8020/auth/" + "appspace/" + spaceId + "/session/" + token;
+        String oneAuth = Strings.isNullOrEmpty(System.getenv("ONEAUTH_API_URL")) ? oneAuthUrl : System.getenv("ONEAUTH_API_URL");
+        String customURL = oneAuth+"/auth/" + "appspace/" + spaceId + "/session/" + token;
 
         try {
             ResponseEntity<JwtResorce.UserResource> responseEntity = restTemplate.getForEntity(customURL, JwtResorce.UserResource.class);
