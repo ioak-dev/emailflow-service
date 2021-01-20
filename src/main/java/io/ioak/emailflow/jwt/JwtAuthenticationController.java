@@ -53,16 +53,19 @@ public class JwtAuthenticationController {
             if (userResource != null) {
                 String userId = tokenUtil.extractUserWithSecurityKey(userResource.getToken(), "jwtsecret");
                 User user = userRepository.findById(userId).orElse(null);
-                if (user != null) {
-                    userRepository.save(user);
+                if (user == null) {
+                    user = new User();
                 }
-                //String responseToken = jwtTokenUtil.generateTokenWithUser(userResource);
-                JwtResorce.UserResource userResource1 = getUserResource(user, jwtTokenUtil.generateTokenWithUser(userResource));
+                user.setEmail(userResource.getEmail());
+                user.setFirstName(userResource.getFirstName());
+                user.setLastName(userResource.getLastName());
+                userRepository.save(user);
+                JwtResorce.UserResource userResource1 = getUserResource(user, userResource.getToken());
                 return ResponseEntity.ok(getUserData(userResource1));
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }
