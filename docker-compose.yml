@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  emailflowservice:
+    image: emailflowservice
+    container_name: emailflowservice
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8045:8045
+    environment:
+      MONGODB_URI: mongodb://mongo.docker:27017
+    networks:
+      ioak-net:
+        aliases:
+          - emailflowservice.docker
+
+networks:
+  ioak-net:
+      name: ioak-network
