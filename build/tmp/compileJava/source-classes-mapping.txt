@@ -1,0 +1,102 @@
+io/ioak/emailflow/application/email/EmailServer.java
+ io.ioak.emailflow.application.email.EmailServer
+io/ioak/emailflow/space/SpaceFilter.java
+ io.ioak.emailflow.space.SpaceFilter
+io/ioak/emailflow/space/aspect/UseAdminDbAspect.java
+ io.ioak.emailflow.space.aspect.UseAdminDbAspect
+io/ioak/emailflow/application/template/TemplateRepository.java
+ io.ioak.emailflow.application.template.TemplateRepository
+io/ioak/emailflow/config/MailProcessor.java
+ io.ioak.emailflow.config.MailProcessor
+ io.ioak.emailflow.config.MailProcessor$1
+io/ioak/emailflow/application/apikey/Apikey.java
+ io.ioak.emailflow.application.apikey.Apikey
+io/ioak/emailflow/jwt/CustomUserDetailsService.java
+ io.ioak.emailflow.jwt.CustomUserDetailsService
+io/ioak/emailflow/application/project/Project.java
+ io.ioak.emailflow.application.project.Project
+io/ioak/emailflow/config/mongo/MongobeeConfig.java
+ io.ioak.emailflow.config.mongo.MongobeeConfig
+io/ioak/emailflow/application/apikey/ApikeyScope.java
+ io.ioak.emailflow.application.apikey.ApikeyScope
+io/ioak/emailflow/application/email/EmailServerRepository.java
+ io.ioak.emailflow.application.email.EmailServerRepository
+io/ioak/emailflow/application/project/ProjectController.java
+ io.ioak.emailflow.application.project.ProjectController
+io/ioak/emailflow/application/emailprocessing/EmailServerTemplateResource.java
+ io.ioak.emailflow.application.emailprocessing.EmailServerTemplateResource
+io/ioak/emailflow/config/RestTemplateConfig.java
+ io.ioak.emailflow.config.RestTemplateConfig
+io/ioak/emailflow/jwt/JwtSecurityConfig.java
+ io.ioak.emailflow.jwt.JwtSecurityConfig
+io/ioak/emailflow/jwt/User.java
+ io.ioak.emailflow.jwt.User
+io/ioak/emailflow/jwt/JwtAuthenticationController.java
+ io.ioak.emailflow.jwt.JwtAuthenticationController
+io/ioak/emailflow/space/DefaultSpaceService.java
+ io.ioak.emailflow.space.DefaultSpaceService
+io/ioak/emailflow/jwt/JwtTokenUtil.java
+ io.ioak.emailflow.jwt.JwtTokenUtil
+io/ioak/emailflow/config/CorsConfig.java
+ io.ioak.emailflow.config.CorsConfig
+io/ioak/emailflow/space/SpaceStatus.java
+ io.ioak.emailflow.space.SpaceStatus
+io/ioak/emailflow/application/apikey/ApikeyRepository.java
+ io.ioak.emailflow.application.apikey.ApikeyRepository
+io/ioak/emailflow/space/SpaceConfig.java
+ io.ioak.emailflow.space.SpaceConfig
+io/ioak/emailflow/jwt/JwtAuthenticationEntryPoint.java
+ io.ioak.emailflow.jwt.JwtAuthenticationEntryPoint
+io/ioak/emailflow/application/apikey/ApikeyController.java
+ io.ioak.emailflow.application.apikey.ApikeyController
+io/ioak/emailflow/space/SpaceHolder.java
+ io.ioak.emailflow.space.SpaceHolder
+io/ioak/emailflow/application/emailprocessing/EmailServerResource.java
+ io.ioak.emailflow.application.emailprocessing.EmailServerResource
+io/ioak/emailflow/jwt/JwtResorce.java
+ io.ioak.emailflow.jwt.JwtResorce
+ io.ioak.emailflow.jwt.JwtResorce$UserData
+ io.ioak.emailflow.jwt.JwtResorce$UserResource
+io/ioak/emailflow/jwt/RoleType.java
+ io.ioak.emailflow.jwt.RoleType
+io/ioak/emailflow/application/emailprocessing/EmailProcessingController.java
+ io.ioak.emailflow.application.emailprocessing.EmailProcessingController
+io/ioak/emailflow/space/Space.java
+ io.ioak.emailflow.space.Space
+ io.ioak.emailflow.space.Space$SpaceBuilder
+io/ioak/emailflow/space/SpaceService.java
+ io.ioak.emailflow.space.SpaceService
+io/ioak/emailflow/space/aspect/UseAdminDb.java
+ io.ioak.emailflow.space.aspect.UseAdminDb
+io/ioak/emailflow/application/template/Template.java
+ io.ioak.emailflow.application.template.Template
+io/ioak/emailflow/space/SpaceLocal.java
+ io.ioak.emailflow.space.SpaceLocal
+ io.ioak.emailflow.space.SpaceLocal$SpaceLocalBuilder
+io/ioak/emailflow/space/SpaceController.java
+ io.ioak.emailflow.space.SpaceController
+io/ioak/emailflow/application/email/EmailServerController.java
+ io.ioak.emailflow.application.email.EmailServerController
+io/ioak/emailflow/config/mongo/MultispaceMongoDbFactory.java
+ io.ioak.emailflow.config.mongo.MultispaceMongoDbFactory
+io/ioak/emailflow/application/project/ProjectRepository.java
+ io.ioak.emailflow.application.project.ProjectRepository
+io/ioak/emailflow/space/SpaceRepository.java
+ io.ioak.emailflow.space.SpaceRepository
+io/ioak/emailflow/space/SpaceLocalRepository.java
+ io.ioak.emailflow.space.SpaceLocalRepository
+io/ioak/emailflow/space/DatasetResource.java
+ io.ioak.emailflow.space.DatasetResource
+ io.ioak.emailflow.space.DatasetResource$SpaceResource
+io/ioak/emailflow/application/template/TemplateController.java
+ io.ioak.emailflow.application.template.TemplateController
+io/ioak/emailflow/EmailflowServiceApplication.java
+ io.ioak.emailflow.EmailflowServiceApplication
+io/ioak/emailflow/jwt/UserRepository.java
+ io.ioak.emailflow.jwt.UserRepository
+io/ioak/emailflow/config/mongo/MongoConfiguration.java
+ io.ioak.emailflow.config.mongo.MongoConfiguration
+io/ioak/emailflow/config/SwaggerConfig.java
+ io.ioak.emailflow.config.SwaggerConfig
+io/ioak/emailflow/jwt/JwtRequestFilter.java
+ io.ioak.emailflow.jwt.JwtRequestFilter
