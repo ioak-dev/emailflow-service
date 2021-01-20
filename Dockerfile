@@ -1,4 +1,4 @@
-FROM openjdk:13-alpine
+FROM openjdk:11.0.9.1-oracle
 VOLUME /tmp
 ARG JAVA_OPTS
 ENV JAVA_OPTS=$JAVA_OPTS
